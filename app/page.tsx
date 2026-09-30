@@ -1,5 +1,6 @@
 import { resume } from "@/data/resume";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileNav from "@/components/MobileNav";
 import Image from "next/image";
 
 function ArrowUpRight() {
@@ -15,6 +16,55 @@ function ArrowDown() {
     <svg aria-hidden="true" viewBox="0 0 16 16" className="icon">
       <path d="M8 2v11M4 9l4 4 4-4" />
     </svg>
+  );
+}
+
+const companies = ["Bosch", "GE Healthcare", "Philips", "Scotiabank", "BMO", "Mobile Fringe"] as const;
+type Company = (typeof companies)[number];
+
+const companyLogoDetails: Record<Company, { className: string; initials: string }> = {
+  Bosch: { className: "company-bosch", initials: "B" },
+  "GE Healthcare": { className: "company-ge", initials: "GE" },
+  Philips: { className: "company-philips", initials: "P" },
+  Scotiabank: { className: "company-scotia", initials: "S" },
+  BMO: { className: "company-bmo", initials: "M" },
+  "Mobile Fringe": { className: "company-mobile-fringe", initials: "MF" }
+};
+
+function CompanyLogo({ company }: { company: Company }) {
+  const { className, initials } = companyLogoDetails[company];
+
+  return (
+    <div className={`company-logo ${className}`} role="img" aria-label={company}>
+      {company === "Bosch" ? (
+        <Image className="company-bosch-image" src="/bosch.svg" alt="" aria-hidden="true" width={433} height={97} />
+      ) : company === "BMO" ? (
+        <Image className="company-bmo-image" src="/bmo.svg" alt="" aria-hidden="true" width={144} height={50} />
+      ) : company === "Scotiabank" ? (
+        <Image className="company-scotia-image" src="/scotiabank.svg" alt="" aria-hidden="true" width={272} height={40} />
+      ) : company === "GE Healthcare" ? (
+        <Image
+          className="company-ge-image"
+          src="/ge-healthcare.svg"
+          alt=""
+          aria-hidden="true"
+          width={144}
+          height={32}
+        />
+      ) : company === "Philips" ? (
+        <Image className="company-philips-image" src="/philips.svg" alt="" aria-hidden="true" width={48} height={48} />
+      ) : company === "Mobile Fringe" ? (
+        <svg className="company-mobile-fringe-mark" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M50 2 96 28v44L50 98 4 72V28L50 2Z" fill="currentColor" />
+          <path d="m27 73 9-45 14 27 14-27 9 45H61l-3-22-8 17-8-17-3 22H27Z" fill="#fff" />
+        </svg>
+      ) : (
+        <span className="company-logo-mark" aria-hidden="true">{initials}</span>
+      )}
+      {company !== "Bosch" && company !== "GE Healthcare" && company !== "BMO" && company !== "Scotiabank" && (
+        <span className="company-logo-name">{company}</span>
+      )}
+    </div>
   );
 }
 
@@ -72,11 +122,36 @@ function ProjectVisual({
 }
 
 export default function Home() {
+  const impactHighlights = [
+    { value: "16+", label: "years building software" },
+    { value: "8", label: "engineers led" },
+    { value: "30%+", label: "increase in self-serve education" },
+    { value: "~40%", label: "fewer AI tokens used" }
+  ];
+  const credentialsByYear = [
+    ...resume.certifications.map((certification) => ({
+      year: certification.year,
+      type: "Certification",
+      title: certification.title,
+      detail: certification.issuer
+    })),
+    ...[resume.education, resume.secondEducation].map((education) => ({
+      year: education.year,
+      type: "Graduation",
+      title: education.degree,
+      detail: education.school.split(" · ")[0]
+    }))
+  ].reduce<Record<string, { type: string; title: string; detail: string }[]>>((milestones, item) => {
+    milestones[item.year] = [...(milestones[item.year] ?? []), item];
+    return milestones;
+  }, {});
+  const credentialMilestones = Object.entries(credentialsByYear)
+    .sort(([yearA], [yearB]) => Number(yearA) - Number(yearB));
   return (
     <main>
       <nav className="site-nav" aria-label="Primary navigation">
         <a className="wordmark" href="#top" aria-label="Mithun Nagaraj home">
-          MN<span>.</span>
+          {resume.name}<span>.</span>
         </a>
         <div className="nav-links">
           <a href="#about">About</a>
@@ -89,32 +164,61 @@ export default function Home() {
           Let&apos;s talk
         </a>
         <ThemeToggle />
+        <MobileNav />
       </nav>
 
-      <section className="hero section-shell" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">Hello, I&apos;m Mithun</p>
-          <h1>
-            Making complex things feel <em>simple.</em>
-          </h1>
-          <p className="hero-intro">{resume.intro}</p>
-          <div className="hero-actions" aria-label="Hero actions">
-            <a className="button button-coral" href="#projects">
-              See my work <ArrowUpRight />
-            </a>
-            <a className="button button-coral" href="#about">
-              More about me <ArrowDown />
-            </a>
+      <section className="company-strip" aria-label="Companies I've worked with">
+        <div className="company-strip-inner section-shell">
+          <p className="company-strip-label">Worked with</p>
+          <div className="company-marquee">
+            <div className="company-track">
+              {[0, 1].map((copy) => (
+                <div className="company-group" key={copy} aria-hidden={copy === 1}>
+                  {companies.map((company) => <CompanyLogo company={company} key={company} />)}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="hero-mark" aria-hidden="true">
-          <div className="hero-circle circle-large" />
-          <div className="hero-circle circle-small" />
-          <span className="hero-mark-label">curious<br />by default</span>
+      </section>
+
+      <section className="hero section-shell" id="top">
+        <div className="hero-main">
+          <div className="hero-copy">
+            <p className="hero-name">{resume.name}</p>
+            <p className="eyebrow">{resume.role} <span>·</span> {resume.location}</p>
+            <h1>
+              Making complex technology feel <em>simple.</em>
+            </h1>
+            <p className="hero-intro">{resume.intro}</p>
+            <div className="hero-actions" aria-label="Hero actions">
+              <a className="button button-coral" href="#projects">
+                Explore my work <ArrowUpRight />
+              </a>
+              <a className="button button-outline" href="#about">
+                About me <ArrowDown />
+              </a>
+            </div>
+          </div>
+          <aside className="hero-proof" aria-label="Career highlights">
+            <div className="hero-proof-heading">
+              <p className="section-kicker">Impact, in practice</p>
+              <span className="status-dot" aria-hidden="true" />
+            </div>
+            <div className="hero-metrics">
+              {impactHighlights.map((highlight) => (
+                <div className="hero-metric" key={highlight.label}>
+                  <strong>{highlight.value}</strong>
+                  <span>{highlight.label}</span>
+                </div>
+              ))}
+            </div>
+            <p className="hero-proof-note">Engineering leadership grounded in thoughtful product outcomes.</p>
+          </aside>
         </div>
         <div className="hero-bottom">
           <span>Based in {resume.location}</span>
-          <span>Currently crafting full-stack AI products</span>
+          <span>Building reliable, human-centered AI experiences</span>
           <span className="scroll-note">Scroll to explore <ArrowDown /></span>
         </div>
       </section>
@@ -128,7 +232,7 @@ export default function Home() {
           <div className="about-columns">
             {resume.bio.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
-          <a className="inline-link" href={`mailto:${resume.email}`}>
+          <a className="inline-link" target="_blank" rel="noreferrer" href={`${resume.social.linkedin}`}>
             Get in touch <ArrowUpRight />
           </a>
         </div>
@@ -199,10 +303,19 @@ export default function Home() {
       <section className="skills section-shell section-grid" id="skills">
         <div className="section-label"><span>Toolkit</span></div>
         <div className="skills-content">
-          <h2>Tools are just tools.<br /><em>Curiosity is the real skill.</em></h2>
-          <div className="skill-list">
-            {resume.skills.map((skill, index) => (
-              <span key={skill}><b>{String(index + 1).padStart(2, "0")}</b>{skill}</span>
+          <div className="skills-heading">
+            <h2>Tools are just tools.<br /><em>Curiosity is the real skill.</em></h2>
+            <p>From shaping ideas to supporting production software, I bring a broad toolkit and a practical, end-to-end engineering mindset.</p>
+          </div>
+          <div className="skill-groups">
+            {resume.skillGroups.map((group) => (
+              <article className="skill-group" key={group.name}>
+                <h3>{group.name}</h3>
+                <p>{group.description}</p>
+                <div className="skill-tags">
+                  {group.skills.map((skill) => <span key={skill}>{skill}</span>)}
+                </div>
+              </article>
             ))}
           </div>
         </div>
@@ -211,25 +324,33 @@ export default function Home() {
       <section className="credentials section-shell section-grid">
         <div className="section-label"><span>Credentials</span></div>
         <div className="credentials-content">
-          <div className="credential-block">
-            <p className="eyebrow">Certifications</p>
-            {resume.certifications.map((cert) => (
-              <div className="credential-row" key={cert.title}>
-                <div><h3>{cert.title}</h3><p>{cert.issuer}</p></div>
-                <span>{cert.year}</span>
+          <div className="credential-chart">
+            <div className="credential-chart-heading">
+              <div>
+                <p className="eyebrow">Education &amp; certifications</p>
+                <h3 id="credential-chart-title">Milestones through the years</h3>
               </div>
-            ))}
-          </div>
-          <div className="credential-block education-block">
-            <p className="eyebrow">Education</p>
-            <div className="credential-row">
-              <div><h3>{resume.education.degree}</h3><p>{resume.education.school}</p></div>
-              <span>{resume.education.year}</span>
             </div>
-            <div className="credential-row">
-              <div><h3>{resume.secondEducation.degree}</h3><p>{resume.secondEducation.school}</p></div>
-              <span>{resume.secondEducation.year}</span>
-            </div>
+            <ol className="credential-fishbone" aria-labelledby="credential-chart-title">
+              {credentialMilestones.map(([year, milestones], index) => (
+                <li
+                  className={`credential-milestone ${index % 2 === 0 ? "milestone-above" : "milestone-below"}`}
+                  key={year}
+                >
+                  <span className="credential-milestone-stem" aria-hidden="true" />
+                  <span className="credential-milestone-year">{year}</span>
+                  <div className="credential-milestone-card">
+                    {milestones.map((milestone) => (
+                      <div className="credential-event" key={`${milestone.type}-${milestone.title}`}>
+                        <span>{milestone.type}</span>
+                        <h4>{milestone.title}</h4>
+                        <p>{milestone.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>
@@ -240,6 +361,7 @@ export default function Home() {
           <h2>Let&apos;s make it<br /><em>real.</em></h2>
           <div className="contact-details">
             <a className="contact-email" href={`mailto:${resume.email}`}>{resume.email}<ArrowUpRight /></a>
+            <a className="contact-email" href={`${resume.social.linkedin}`} target="_blank" rel="noreferrer">Mithun Nagaraj<ArrowUpRight /></a>
             <a className="contact-phone" href="tel:+16474590647">+1.647.459.0647</a>
           </div>
           <div className="contact-orbit orbit-large" aria-hidden="true" />
@@ -248,7 +370,7 @@ export default function Home() {
       </section>
 
       <footer className="footer section-shell">
-        <a className="wordmark" href="#top">MN<span>.</span></a>
+        <a className="wordmark" href="#top">{resume.name}<span>.</span></a>
         <p>© {new Date().getFullYear()} Mithun Nagaraj. Engineering thoughtful digital experiences.</p>
         <div className="social-links">
           <a href={resume.social.github} target="_blank" rel="noreferrer">GitHub <ArrowUpRight /></a>
