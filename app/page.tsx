@@ -219,7 +219,6 @@ export default function Home() {
         <div className="hero-bottom">
           <span>Based in {resume.location}</span>
           <span>Building reliable, human-centered AI experiences</span>
-          <span className="scroll-note">Scroll to explore <ArrowDown /></span>
         </div>
       </section>
 
@@ -232,7 +231,7 @@ export default function Home() {
           <div className="about-columns">
             {resume.bio.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
-          <a className="inline-link" target="_blank" rel="noreferrer" href={`${resume.social.linkedin}`}>
+          <a className="inline-link" href="#contact">
             Get in touch <ArrowUpRight />
           </a>
         </div>
@@ -253,7 +252,6 @@ export default function Home() {
                     <h3>{item.company}</h3>
                     <p className="role">{item.role}</p>
                   </div>
-                  <span className="timeline-arrow">↗</span>
                 </div>
                 <p className="timeline-summary">{item.summary}</p>
                 <ul>

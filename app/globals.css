@@ -42,7 +42,9 @@ a:focus-visible { outline: 2px solid var(--coral); outline-offset: 4px; }
 .section-shell { max-width: 1440px; margin: 0 auto; padding-left: 48px; padding-right: 48px; }
 .site-nav {
   height: 92px; display: flex; align-items: center; justify-content: space-between;
-  max-width: 1340px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 2;
+  background: color-mix(in srgb, var(--navy) 94%, transparent); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line); left: 0; padding: 0 max(48px, calc((100vw - 1244px) / 2));
+  position: fixed; right: 0; top: 0; width: 100%; z-index: 10;
 }
 .wordmark { font-size: 17px; font-weight: 700; letter-spacing: -.04em; white-space: nowrap; }
 .wordmark span { color: var(--coral); }
@@ -225,10 +227,11 @@ h2 { font-size: clamp(39px, 5.1vw, 68px); font-weight: 500; margin: 0 0 51px; }
 .contact-phone { border-bottom: 1px solid rgba(16,35,43,.35); font-family: var(--mono); font-size: 12px; padding-bottom: 6px; }
 .contact-orbit { border: 1px solid rgba(16,35,43,.26); border-radius: 50%; position: absolute; }.orbit-large { height: 570px; right: -9%; top: -38%; width: 570px; }.orbit-small { border-color: rgba(241,238,230,.6); height: 240px; right: 10%; top: 16%; width: 240px; }
 .footer { align-items: center; background: color-mix(in srgb, var(--navy) 94%, transparent); backdrop-filter: blur(14px); border-top: 1px solid var(--line); bottom: 0; display: flex; justify-content: space-between; left: 0; min-height: 72px; padding-top: 0; padding-bottom: 0; position: fixed; right: 0; width: 100%; z-index: 10; }.footer p, .social-links { color: var(--ink-muted); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }.social-links { display: flex; gap: 20px; }.social-links a { align-items: center; display: flex; gap: 4px; }.social-links .icon { height: 10px; width: 10px; }
-main { padding-bottom: 72px; }
+main { padding-top: 92px; padding-bottom: 72px; }
 
 @media (max-width: 800px) {
   .section-shell { padding-left: 24px; padding-right: 24px; }
+  main { padding-top: 76px; }
   .site-nav { height: 76px; padding: 0 24px; }.wordmark { font-size: 15px; }.nav-links { display: none; }.nav-availability { display: none; }.theme-toggle { margin-left: auto; margin-right: 14px; }
   .mobile-nav { display: block; position: relative; }
   .mobile-nav-toggle { align-items: center; background: transparent; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; height: 36px; justify-content: center; width: 36px; }

@@ -24,7 +24,7 @@ export const resume = {
   intro: "Technology leader with 16+ years building reliable digital products across banking, healthcare, and enterprise. I bring full-stack engineering, product thinking, and human-centered design together to make complex technology useful.",
   bio: [
     "I’m a technology leader and AI enthusiast who enjoys working at the intersection of engineering, product thinking, and human-centered design. My sweet spot is making complex technology feel clear and useful.",
-    "Across banking and healthcare, I’ve led teams, shaped architecture, and delivered full-stack experiences where reliability matters. Today, I’m especially curious about generative AI, agentic workflows, and what happens when good engineering meets thoughtful product design."
+    "Across banking and healthcare, I’ve led teams, shaped architecture, and delivered full-stack experiences where reliability matters. I work across modern web architectures, cloud platforms, APIs, distributed systems, and AI-enabled applications, focusing on building reliable systems that create measurable value for users and businesses. Today, I’m especially curious about generative AI, agentic workflows, and what happens when good engineering meets thoughtful product design."
   ],
   social: {
     github: "https://github.com/mithunnagaraj",
@@ -125,7 +125,7 @@ export const resume = {
     {
       name: "AI & Intelligent Systems",
       description: "Exploring practical AI capabilities and retrieval-based experiences.",
-      skills: ["Generative AI", "Agentic AI", "Prompt Engineering", "RAG"]
+      skills: ["Generative AI", "Agentic AI", "Prompt Engineering", "RAG", "Python", "Embeddings", "LangChain/LangGraph"]
     },
     {
       name: "Quality & SDLC",
